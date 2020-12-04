@@ -1,0 +1,26 @@
+language: generic
+
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker build -t jjjax/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true jjj4x/react-test npm test
+
+# Production Stage
+after_success:
+  - docker build -t jjjax/multi-container-client ./client
+  - docker build -t jjjax/multi-container-nginx ./nginx
+  - docker build -t jjjax/multi-container-server ./server
+  - docker build -t jjjax/multi-container-worker ./worker
+  # Push
+  - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USER}" --password-stdin
+  - docker push jjjax/multi-container-client
+  - docker push jjjax/multi-container-nginx
+  - docker push jjjax/multi-container-server
+  - docker push jjjax/multi-container-worker
+  - docker logout
