@@ -9,7 +9,7 @@ before_install:
   - docker build -t jjjax/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run -e CI=true jjj4x/react-test npm test
+  - docker run -e CI=true jjjax/react-test npm test
 
 # Production Stage
 after_success:
